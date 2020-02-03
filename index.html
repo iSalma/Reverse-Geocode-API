@@ -1,0 +1,76 @@
+<html>
+
+<head>
+
+
+</head>
+<body>
+
+  <div>
+    <label>result:</label>
+    <input id="txtx" type="text">
+    <br>
+    <br>
+    <label>city:</label>
+    <input id="txt3" type="text">
+    <br>
+    <br>
+    <label>subregion:</label>
+    <input id="txt4" type="text">
+    <br>
+    <br>
+    <label>region:</label>
+    <input id="txt5" type="text">
+    <br>
+    <br>
+    <!-- زر ارجاع البيانات و تعبئة الحقول -->
+    <button onclick="getCity()">Get my City</button>
+  </div>
+  <p> NOTE: You have to enable "Location Access" on your device first.</p>
+  <script>
+    var txt1, txt2, txt3;
+    function getCity() {
+      navigator.geolocation.getCurrentPosition(position => {
+        // جلب دائرة العرض 
+        txt1 = position.coords.latitude;
+        // جلب خط الطول
+        txt2 = position.coords.longitude;
+        var geocodeService = L.esri.Geocoding.geocodeService();
+        // جلب المدينة باستخدام دائرة العرض و خط الطول
+        geocodeService.reverse().latlng([25.1858677,44.6019551]).run(function (error, result) {
+          if (error) {
+            return "error";
+          }
+          else
+          {
+          //جلب المدينة
+          if(result.address.Subregion!="")
+          {
+            txt3 = result.address.Subregion;
+          }
+          else
+          {
+            if(result.address.City!="")
+            {
+              txt3 = result.address.City;
+            }
+            else
+            {
+              txt3 = result.address.Region;
+            }
+          }
+          console.log(result.address)
+          document.getElementById("txtx").value = txt3;
+          document.getElementById("txt3").value =result.address.City;
+          document.getElementById("txt4").value = result.address.Subregion;
+          document.getElementById("txt5").value =result.address.Region;
+          }
+        });
+      });
+    }
+
+  </script>
+  
+<script src="index.js"></script>
+</body>
+</html>
