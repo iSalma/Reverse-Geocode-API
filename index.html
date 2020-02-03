@@ -1,26 +1,12 @@
 <html>
 
 <head>
-
-
+ <script src="index.js"></script>
 </head>
 <body>
-
   <div>
-    <label>result:</label>
-    <input id="txtx" type="text">
-    <br>
-    <br>
     <label>city:</label>
     <input id="txt3" type="text">
-    <br>
-    <br>
-    <label>subregion:</label>
-    <input id="txt4" type="text">
-    <br>
-    <br>
-    <label>region:</label>
-    <input id="txt5" type="text">
     <br>
     <br>
     <!-- زر ارجاع البيانات و تعبئة الحقول -->
@@ -28,7 +14,7 @@
   </div>
   <p> NOTE: You have to enable "Location Access" on your device first.</p>
   <script>
-    var txt1, txt2, txt3;
+    var txt1, txt2, txt3="";
     function getCity() {
       navigator.geolocation.getCurrentPosition(position => {
         // جلب دائرة العرض 
@@ -37,33 +23,31 @@
         txt2 = position.coords.longitude;
         var geocodeService = L.esri.Geocoding.geocodeService();
         // جلب المدينة باستخدام دائرة العرض و خط الطول
-        geocodeService.reverse().latlng([25.1858677,44.6019551]).run(function (error, result) {
+        geocodeService.reverse().latlng([txt1,txt2]).run(function (error, result) {
           if (error) {
             return "error";
           }
           else
           {
           //جلب المدينة
-          if(result.address.Subregion!="")
-          {
-            txt3 = result.address.Subregion;
-          }
-          else
-          {
-            if(result.address.City!="")
+            if(result.address.Neighborhood!="")
             {
-              txt3 = result.address.City;
+              txt3+=result.address.Neighborhood+"-";
             }
-            else
+            if(result.address.City!=""&&(result.address.City!=result.address.Neighborhood)&&(result.address.City!=result.address.Subregion)&&(result.address.City!=result.address.Region))
             {
-              txt3 = result.address.Region;
+              txt3+=result.address.City+"-";
             }
-          }
-          console.log(result.address)
-          document.getElementById("txtx").value = txt3;
-          document.getElementById("txt3").value =result.address.City;
-          document.getElementById("txt4").value = result.address.Subregion;
-          document.getElementById("txt5").value =result.address.Region;
+            if(result.address.Subregion!=""&&(result.address.Subregion!=result.address.Region))
+            {
+              txt3+=result.address.Subregion+"-";
+            }
+            if(result.address.Region!="")
+            {
+              txt3+=result.address.Region;
+            }
+          document.getElementById("txt3").value = txt3;
+          console.log(result)
           }
         });
       });
@@ -71,6 +55,6 @@
 
   </script>
   
-<script src="index.js"></script>
+ 
 </body>
 </html>
